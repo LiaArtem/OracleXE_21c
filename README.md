@@ -40,7 +40,9 @@ IDE - Oracle SQL Developer
 
 -- объекты пользователя
 select * from user_objects;
+
 -- инвалидные объекты пользователя
 select * from user_objects where status != 'VALID'
+
 -- сессии
 select * from V$SESSION;

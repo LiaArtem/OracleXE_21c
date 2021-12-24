@@ -21,4 +21,5 @@ BEGIN
 END INSERT_KURS;
 
 
+
 /

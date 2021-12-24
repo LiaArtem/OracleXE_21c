@@ -38,6 +38,9 @@ as
                    p_response_status_desc => p_response_status_desc);      
 
       --dbms_output.put_line(p_response_body);
+      
+      -- добавить историю
+      ADD_IMPORT_DATA_TYPE(p_type_oper => 'fair_value', p_data_type => 'csv', p_data_value => p_response_body);         
 
       for j in (
                 with tt as (select p_response_body || chr(13)||chr(10) as str from dual)
@@ -133,6 +136,8 @@ as
                    p_response_status_desc => p_response_status_desc);      
 
        --dbms_output.put_line(p_response_body);
+      -- добавить историю
+      ADD_IMPORT_DATA_TYPE(p_type_oper => 'isin_secur', p_data_type => p_format, p_data_value => p_response_body);                
 
        if p_format = 'json'            
        then
@@ -142,8 +147,8 @@ as
                        select t.cpcode,
                               t.nominal,                                      
                               p_convert.str_to_num(t.auk_proc) as auk_proc,
-                              p_convert.str_to_date(t.pgs_date) as pgs_date,
-                              p_convert.str_to_date(t.razm_date) as razm_date,
+                              p_convert.str_to_date(t.pgs_date,'yyyy-mm-dd') as pgs_date,
+                              p_convert.str_to_date(t.razm_date,'yyyy-mm-dd') as razm_date,
                               t.cptype,
                               t.cpdescr,
                               t.pay_period,                                      
@@ -201,7 +206,7 @@ as
                   else  
                       -- периоды
                       for kk in (
-                                 select p_convert.str_to_date(t.pay_date) as pay_date,
+                                 select p_convert.str_to_date(t.pay_date,'yyyy-mm-dd') as pay_date,
                                         t.pay_type,                                      
                                         p_convert.str_to_num(t.pay_val) as pay_val,
                                         t.pay_array
@@ -247,8 +252,8 @@ as
                        select t.cpcode,
                               t.nominal,                                      
                               p_convert.str_to_num(t.auk_proc) as auk_proc,
-                              p_convert.str_to_date(t.pgs_date) as pgs_date,
-                              p_convert.str_to_date(t.razm_date) as razm_date,
+                              p_convert.str_to_date(t.pgs_date,'yyyy-mm-dd') as pgs_date,
+                              p_convert.str_to_date(t.razm_date,'yyyy-mm-dd') as razm_date,
                               t.cptype,
                               t.cpdescr,
                               t.pay_period,                                      
@@ -306,7 +311,7 @@ as
                   else  
                       -- периоды
                       for kk in (
-                                 select p_convert.str_to_date(t.pay_date) as pay_date,
+                                 select p_convert.str_to_date(t.pay_date,'yyyy-mm-dd') as pay_date,
                                         t.pay_type,                                      
                                         p_convert.str_to_num(t.pay_val) as pay_val,
                                         t.pay_array
@@ -370,13 +375,13 @@ as
       p_kurs_nbu_row         t_kurs_nbu_row   := t_kurs_nbu_row(null,null,null,null,null);
       p_kurs_nbu_table       t_kurs_nbu_table := t_kurs_nbu_table();  
     begin
-      if p_format = 'json' then p_dop_param := '1'; end if;
+      if p_format = 'json' then p_dop_param := '&json'; end if;
 
       if p_currency is null
       then  
          p_url := 'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?date='||to_char(p_date,'yyyymmdd')||p_dop_param;
       else
-         p_url := 'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode='||p_currency||'='||to_char(p_date,'yyyymmdd')||p_dop_param;
+         p_url := 'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode='||p_currency||'&date='||to_char(p_date,'yyyymmdd')||p_dop_param;
       end if;
 
       read_wallet_param(p_wallet_file => p_wallet_file, p_wallet_file_pwd => p_wallet_file_pwd);     
@@ -393,6 +398,8 @@ as
                    p_response_status_desc => p_response_status_desc);      
 
        --dbms_output.put_line(p_response_body);
+       -- добавить историю
+       ADD_IMPORT_DATA_TYPE(p_type_oper => 'kurs_nbu', p_data_type => p_format, p_data_value => p_response_body);                              
 
        if p_format = 'json'            
        then
@@ -523,7 +530,7 @@ as
           from dual;                     
       else
       -- юр. лица        
-          select to_clob(JSON_OBJECT('searchType' value '2',
+          select to_clob(JSON_OBJECT('searchType' value '2', 'paging': '1', 
                              'filter'     value JSON_OBJECT('FirmName'     value p_convert.screening_json(p_convert.convert_str(p_lastName,'UTF8','CL8MSWIN1251')),
                                                             'FirmEdrpou'   value p_identCode,
                                                             'categoryCode' value p_categoryCode
@@ -552,6 +559,9 @@ as
        --dbms_output.put_line(p_response_body);
        --raise_application_error(-20000, p_request_body, true);           
        --raise_application_error(-20000, p_response_body, true);           
+
+       -- добавить историю
+       ADD_IMPORT_DATA_TYPE(p_type_oper => 'erb_minfin', p_data_type => 'json', p_data_value => p_response_body);                       
 
        if json_value(p_response_body,'$.errMsg') is not null
        then  
@@ -638,7 +648,102 @@ as
        return p_erb_minfin_table;   
     end;
 
-end;
+   -- Справедливая стоимость ЦБ (котировки НБУ)    
+   procedure add_fair_value (p_date date)
+   is
+   begin
+      insert into FAIR_VALUE(CALC_DATE, 
+                             ISIN, 
+                             CURRENCY_CODE, 
+                             FAIR_VALUE, 
+                             YTM, 
+                             CLEAN_RATE, 
+                             COR_COEF, 
+                             MATURITY, 
+                             COR_COEF_CASH,
+                             NOTIONAL,
+                             AVR_RATE,
+                             OPTION_VALUE,
+                             INTRINSIC_VALUE,
+                             TIME_VALUE,
+                             DELTA_PER,
+                             DELTA_EQU,
+                             DOP
+                             )
+            select f.* from table (read_fair_value(p_date => p_date)) f
+            where not exists (select 1 from FAIR_VALUE fv where fv.calc_date = f.calc_date and fv.isin = f.cpcode and fv.currency_code = f.ccy)
+            ;   
+   end;
 
+   -- Курсы валют НБУ   
+   procedure add_kurs_nbu (p_date date, p_currency_code varchar2)
+   is
+   begin
+      insert into CURRENCY(CODE, NAME, SHORT_NAME)
+         select f.r030, f.txt, f.cc
+         from table (read_kurs_nbu(p_date => p_date, p_format => 'json', p_currency => p_currency_code)) f
+         where not exists (select 1 from CURRENCY cc where cc.code = f.r030);
+           
+      insert into KURS(ID, KURS_DATE, CURRENCY_CODE, RATE)
+            select kurs_seq.nextval, f.exchangedate, f.cc, f.rate
+            from table (read_kurs_nbu(p_date => p_date, p_format => 'json', p_currency => p_currency_code)) f
+            where not exists (select 1 from KURS k where k.kurs_date = f.exchangedate and k.currency_code = f.cc)
+            ;   
+   end;
+
+ -- Перечень ISIN ЦБ с купонными периодами
+   procedure add_isin_secur
+   is
+   begin
+        -- ЦБ
+        insert into ISIN_SECUR(ISIN,
+                               NOMINAL,
+                               AUK_PROC,
+                               PGS_DATE,
+                               RAZM_DATE,
+                               CPTYPE,
+                               CPDESCR,
+                               PAY_PERIOD,
+                               CURRENCY_CODE,
+                               EMIT_OKPO,
+                               EMIT_NAME,
+                               CPTYPE_NKCPFR,
+                               CPCODE_CFI,
+                               TOTAL_BONDS
+                               )
+         select distinct
+                f.CPCODE,
+                f.NOMINAL,
+                f.AUK_PROC,
+                f.PGS_DATE,
+                f.RAZM_DATE,
+                f.CPTYPE,
+                f.CPDESCR,
+                f.PAY_PERIOD,
+                f.VAL_CODE,
+                f.EMIT_OKPO,
+                f.EMIT_NAME,
+                f.CPTYPE_NKCPFR,
+                f.CPCODE_CFI,
+                f.TOTAL_BONDS
+         from table (read_isin_secur(p_format => 'json')) f
+         where not exists (select 1 from ISIN_SECUR sec where sec.isin = f.cpcode);
+         
+         -- купонные периоды
+         insert into ISIN_SECUR_PAY(ISIN_SECUR_ID,
+                                    PAY_DATE,
+                                    PAY_TYPE,
+                                    PAY_VAL)
+         select sec.id,
+                f.PAY_DATE,
+                f.PAY_TYPE,
+                f.PAY_VAL                
+         from table (read_isin_secur(p_format => 'json')) f,
+              ISIN_SECUR sec
+         where sec.isin = f.cpcode and         
+               not exists (select 1 from ISIN_SECUR_PAY pay where pay.PAY_DATE = f.PAY_DATE and pay.PAY_TYPE = f.PAY_TYPE and pay.ISIN_SECUR_ID = sec.id);
+     end;           
+     
+end;
 
 /

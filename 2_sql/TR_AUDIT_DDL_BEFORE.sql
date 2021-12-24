@@ -141,5 +141,6 @@ begin
  end if;
 end;
 
+
 /
 ALTER TRIGGER "TEST_USER"."TR_AUDIT_DDL_BEFORE" ENABLE;

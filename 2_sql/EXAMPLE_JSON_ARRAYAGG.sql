@@ -82,4 +82,5 @@ SELECT JSON_ARRAY(first, last) FROM customers;
 end;
 
 
+
 /

@@ -94,7 +94,7 @@ as
 
     -- Перечень ISIN ЦБ с купонными периодами
     -- Получить данные
-    -- select f.* from table (p_interface_pipe.read_fair_value(p_date => to_date('09.04.2021','dd.mm.yyyy'))) f;    
+    -- select f.* from table (p_interface_pipe.read_isin_secur(p_format => 'json')) f;        
     function read_isin_secur (p_format varchar2) -- формат xml, json
       return type_isin_secur_table pipelined;
 
@@ -124,7 +124,16 @@ as
                               p_type_cust_code varchar2 -- (1 - физ., 2 - юр.)
                               ) return type_erb_minfin_table pipelined;
 
-end;
 
+   -- Справедливая стоимость ЦБ (котировки НБУ)    
+   procedure add_fair_value (p_date date);
+   
+   -- Курсы валют НБУ   
+   procedure add_kurs_nbu (p_date date, p_currency_code varchar2);
+
+   -- Перечень ISIN ЦБ с купонными периодами
+   procedure add_isin_secur;   
+   
+end;
 
 /

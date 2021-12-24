@@ -48,7 +48,7 @@ as
   function str_to_num (p_text in varchar2) return number;
 
   -- Преобразование теста в дату
-  function str_to_date (p_text in varchar2) return date;
+  function str_to_date (p_text in varchar2, p_format in VARCHAR2 default 'dd.mm.yyyy') return date;
 
   -- Преобразование числа в тест
   function num_to_str (p_amount number) return varchar2;  
@@ -64,6 +64,5 @@ as
   function get_datetime(p_text varchar2) return date;
 
 end;
-
 
 /

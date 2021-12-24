@@ -956,10 +956,10 @@ as
   end;
 
   -- Преобразование теста в дату
-  function str_to_date (p_text in varchar2) return date
+  function str_to_date (p_text in varchar2, p_format in VARCHAR2 default 'dd.mm.yyyy') return date
   is
   begin
-    return(to_date(trim(p_text), 'dd.mm.yyyy'));
+    return(to_date(trim(p_text), p_format));
   exception when others
   then
      raise_application_error(-20000, 'Невозможно преобразовать в дату ='||p_text, true);           
@@ -1049,6 +1049,5 @@ as
 
 
 end;
-
 
 /

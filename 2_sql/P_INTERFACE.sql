@@ -43,8 +43,15 @@ as
                               p_type_cust_code varchar2 -- (1 - физ., 2 - юр.)
                               ) return t_erb_minfin_table;
 
+   -- Справедливая стоимость ЦБ (котировки НБУ)    
+   procedure add_fair_value (p_date date);
+
+   -- Курсы валют НБУ   
+   procedure add_kurs_nbu (p_date date, p_currency_code varchar2);
+
+-- Перечень ISIN ЦБ с купонными периодами
+   procedure add_isin_secur;   
 
 end;
-
 
 /

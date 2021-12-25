@@ -1,5 +1,5 @@
 --------------------------------------------------------
---  File created - пятница-декабря-24-2021   
+--  File created - суббота-декабря-25-2021   
 --------------------------------------------------------
 @C:\sqldeveloper\export\T_ERB_MINFIN_ROW.sql
 @C:\sqldeveloper\export\T_ERB_MINFIN_TABLE.sql
@@ -32,14 +32,15 @@
 @C:\sqldeveloper\export\CURRENCY_UK1.sql
 @C:\sqldeveloper\export\I_AUDIT_DDL_CHANGE_OBJ.sql
 @C:\sqldeveloper\export\UK_KURS.sql
-@C:\sqldeveloper\export\ISIN_SECUR_PAY_UK.sql
 @C:\sqldeveloper\export\I_AUDIT_DDL_CHANGE_DT.sql
+@C:\sqldeveloper\export\ISIN_SECUR_PAY_UK.sql
 @C:\sqldeveloper\export\I_AUDIT_DDL_CHANGE_OBJT.sql
 @C:\sqldeveloper\export\ISIN_SECUR_PAY_IND.sql
 @C:\sqldeveloper\export\CURRENCY_UK2.sql
 @C:\sqldeveloper\export\TR_AUDIT_DDL_BEFORE.sql
 @C:\sqldeveloper\export\TR_AUDIT_DDL_CHANGE_BEFORE.sql
 @C:\sqldeveloper\export\ADD_IMPORT_DATA_TYPE.sql
+@C:\sqldeveloper\export\EXAMPLE_JSON_DATA_TYPE.sql
 @C:\sqldeveloper\export\HTTP_REQUEST.sql
 @C:\sqldeveloper\export\INSERT_KURS.sql
 @C:\sqldeveloper\export\READ_WALLET_PARAM.sql

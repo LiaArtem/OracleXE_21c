@@ -20,15 +20,10 @@ BEGIN
          insert into import_data_type(type_oper, data_type, data_xml)
            values (p_type_oper, p_data_type, xmltype(p_data_value));
            
-      elsif p_data_type = 'json' and dbms_lob.getlength(p_data_value) > 2000
+      elsif p_data_type = 'json'
       then
          insert into import_data_type(type_oper, data_type, data_json, data_json_old)
-           values (p_type_oper, p_data_type, json(p_data_value), null);
-
-      elsif p_data_type = 'json' and dbms_lob.getlength(p_data_value) <= 2000
-      then
-         insert into import_data_type(type_oper, data_type, data_json, data_json_old)
-           values (p_type_oper, p_data_type, json(p_data_value), dbms_lob.substr(p_data_value,2000));
+           values (p_type_oper, p_data_type, json(p_data_value), p_data_value);
            
       end if;      
       

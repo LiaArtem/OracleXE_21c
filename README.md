@@ -1,5 +1,6 @@
 # OracleXE_21c
-Oracle Database Express Edition 21c integration with WEB-services (GET,POST - JSON,XML,CSV) (pipelined, utl_http, json_object, json_table, json_arrayagg, xmltable)
+Oracle Database Express Edition 21c integration with WEB-services (GET,POST - JSON,XML,CSV) (pipelined, utl_http, json_object, json_table, json_arrayagg, json_value, xmltable).
+Add JSON Data Type (table, json_transform, json_serialize, json_object_t)
 
 IDE - Oracle SQL Developer
 

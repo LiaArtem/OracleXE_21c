@@ -9,11 +9,14 @@ IDE - Oracle SQL Developer
    на NLS_LANG = AMERICAN_AMERICA.AL32UTF8 (либо AMERICAN_AMERICA.CL8MSWIN1251)
 
 2) Настраиваем кодировку с среде Oracle SQL Developer и запуск debug
-   Tools -> Preferences -> Environment -> Encoding (меняем на UTF-8). Либо cp1251 после загрузки объектов если кодировка базы AMERICAN_AMERICA.CL8MSWIN1251.
-   На объекте -> Compile for Debug -> Debug
+   Tools -> Preferences -> Environment -> Encoding (меняем на UTF-8).
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
    !!! Перед загрузкой таблиц нужно настроить обязательно (экспорт таблиц выполнен в UTF-8).
+
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   Либо cp1251 после загрузки объектов если кодировка базы AMERICAN_AMERICA.CL8MSWIN1251.
+   На объекте -> Compile for Debug -> Debug
 
 3) Выполняем скрипты ./1_sql_sys/ для создания пользователя и выдачи прав (выполняется под пользовалем SYS).
 

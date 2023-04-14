@@ -4,50 +4,50 @@ Add JSON Data Type (table, json_transform, json_serialize, json_object_t)
 
 IDE - Oracle SQL Developer
 
-1) После установки Oracle Database Express Edition 21c внести изменения в глобальном реестре для поддержки универсальной кодировки:
-   Компьютер\HKEY_LOCAL_MACHINE\SOFTWARE\Oracle\KEY_OraDB21Home1 c AMERICAN_AMERICA.WE8MSWIN1252
-   на NLS_LANG = AMERICAN_AMERICA.AL32UTF8 (либо AMERICAN_AMERICA.CL8MSWIN1251)
+1) Після встановлення Oracle Database Express Edition 21c внести зміни до глобального реєстру для підтримки універсального кодування:
+   Комп'ютер\HKEY_LOCAL_MACHINE\SOFTWARE\Oracle\KEY_OraDB21Home1 c AMERICAN_AMERICA.WE8MSWIN1252
+   на NLS_LANG = AMERICAN_AMERICA.AL32UTF8 (або AMERICAN_AMERICA.CL8MSWIN1251)
 
-2) Настраиваем кодировку с среде Oracle SQL Developer и запуск debug
-   Tools -> Preferences -> Environment -> Encoding (меняем на UTF-8).
+2) Налаштовуємо кодування серед Oracle SQL Developer і запуск debug
+   Tools -> Preferences -> Environment -> Encoding (змінюємо на UTF-8).
 
-   !!! Перед загрузкой таблиц нужно настроить обязательно (экспорт таблиц выполнен в UTF-8).
+   !!! Перед завантаженням таблиць потрібно налаштувати обов'язково (експорт таблиць виконано у UTF-8).
    ---------------------------------------------------------------------------------
-   Либо cp1251 после загрузки объектов если кодировка базы AMERICAN_AMERICA.CL8MSWIN1251.
-   На объекте -> Compile for Debug -> Debug
+   Або cp1251 після завантаження об'єктів, якщо кодування бази AMERICAN_AMERICA.CL8MSWIN1251.
+   На об'єкті -> Compile for Debug -> Debug
 
-3) Выполняем скрипты ./1_sql_sys/ для создания пользователя и выдачи прав (выполняется под пользовалем SYS).
+3) Виконуємо скрипти ./1_sql_sys/ для створення користувача та видачі прав (виконується під користувачем SYS).
 
-4) Разворачиваем объекты под пользователем TEST_USER - ./2_sql/ предварительно скопировав в C:\sqldeveloper\export\ и запуском Generated-*.sql под пользователем TEST_USER
-   - kill_test_user.sql - скрипт для удаления пользователя если он уже был, чтобы можно было бы заново залить объекты (выполняется под пользовалем SYS).
+4) Розгортаємо об'єкти під користувачем TEST_USER - ./2_sql/ попередньо скопіювавши в C:\sqldeveloper\export\ і запуском Generated-*.sql під користувачем TEST_USER
+   - kill_test_user.sql - скрипт для видалення користувача якщо він вже був, щоб можна було б заново залити об'єкти (виконується під користувачем SYS).
 
 5) SQL developer -> Recompile Sсhema
 
-6) Настройка Wallet (https соединение)
+6) Налаштування Wallet (https з'єднання)
 
-   Берем готовый ewallet.p12 и размещаем C:\wallet.
-   Если сертификат уже не актуальный выполняем ниже.
+   Беремо готовий ewallet.p12 та розміщуємо C:\wallet.
+   Якщо сертифікат вже не є актуальним виконуємо нижче.
 
-   Чтобы не было ошибки - ORA-29024: Certificate validation failure настраиваем wallet
-   Так как в данном примере читаем web сервисы НБУ и с сайта НАИС берем с сайтов сертификаты для организации https соединения.
-   Читаем описание - https://oracle-base.com/articles/misc/utl_http-and-ssl
-   - заходим через Google Chrome -> https://bank.gov.ua/ -> Жмем на замок -> Безопасное подключение ->
-     -> Действительный сертификат -> Base-64 encoded X.509 (.CER) берем ближайший уровень снизу вверх от *.bank.gov.ua
+   Щоб не було помилки - ORA-29024: Certificate validation failure налаштовуємо wallet
+   Так як у цьому прикладі читаємо web сервіси НБУ і з сайту НАІС беремо з сайтів сертифікати для організації https з'єднання.
+   Читаємо опис - https://oracle-base.com/articles/misc/utl_http-and-ssl
+   - заходимо через Google Chrome -> https://bank.gov.ua/ -> Тиснемо на замок -> Безпечне підключення ->
+     -> Справжній сертифікат -> Base-64 encoded X.509 (.CER) беремо найближчий рівень знизу вгору від *.bank.gov.ua
 
-   Запускаем:
-   Oracle Wallet manager -> New -> (Yes, Yes) -> Password (любой, в данном примере = 34534kjhsdffkjsdfgalfgb###) -> (No)
+   Запускаємо:
+   Oracle Wallet manager -> New -> (Yes, Yes) -> Password (будь-який, в даному прикладі = 34534kjhsdffkjsdfgalfgb###) -> (No)
    -> Trusted Certificates -> Import Trusted Certificates -> файл sert_nbu.cer
-   -> Закрываем -> Save -> Путь C:\wallet, превдарительно создаем папку wallet или выбираем другой путь.
-   -> В папке появится файл ewallet.p12
-   !!! обязательно должны быть выданы права на уровне сервера к файлу ewallet.p12 по данному пути (иначе будет ошибка ORA-28759: сбой при открытии файла)
+   -> Закриваємо -> Save -> Шлях C:\wallet, погано створюємо папку wallet або вибираємо інший шлях.
+   -> У папці з'явиться файл ewallet.p12
+   !!! обов'язково повинні бути видані права на рівні сервера до файлу ewallet.p12 цим шляхом (інакше буде помилка ORA-28759: збій при відкритті файлу)
 
-7) Экспорт объектов в SQL developer (пример в изображении - Settings Export object SQL developer.jpg)
+7) Експорт об'єктів у SQL developer (приклад у зображенні - Settings Export object SQL developer.jpg)
 
--- объекты пользователя
+-- об'єкти користувача
 select * from user_objects;
 
--- инвалидные объекты пользователя
+- Інвалідні об'єкти користувача
 select * from user_objects where status != 'VALID'
 
--- сессии
+- сесії
 select * from V$SESSION;

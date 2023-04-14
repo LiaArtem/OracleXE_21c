@@ -43,7 +43,7 @@ IDE - Oracle SQL Developer
 
 7) Експорт об'єктів у SQL developer (приклад у зображенні - Settings Export object SQL developer.jpg)
 
--- об'єкти користувача
+- об'єкти користувача
 select * from user_objects;
 
 - Інвалідні об'єкти користувача

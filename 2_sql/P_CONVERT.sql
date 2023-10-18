@@ -60,8 +60,14 @@ as
                        p_char_set_from varchar2 default null) -- преобразования из
     return varchar2;
 
-  -- Прообразование теста в дату и время (формат YYYY-MM-DDThh24:mi:ssZ)
+  -- Преобразование теста в дату и время (формат YYYY-MM-DDThh24:mi:ssZ)
   function get_datetime(p_text varchar2) return date;
+
+  -- Описание (дні)
+  function str_days (p_value integer) return varchar2;
+
+  -- Описание (місяці)
+  function str_month (p_value integer) return varchar2;
 
 end;
 
